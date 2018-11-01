@@ -1,0 +1,23 @@
+onderzoek of die 360 schijf idee werkt
+anders kan ie ook heen en weer 360 graden draaien
+werk verder uit waarom lidar het best geschikt is
+werk aan een proof of concept
+hoe bouwt lidar een beeld op
+onderzoeks vraag is hoe ik het beste een beeld kan opbouwen
+criteria is dat het snel moet zijn, het moet relevant zijn
+onderzoek rotary encoder
+duidelijk en kort op papier schrijven de voor en nadelen van elke sensor
+en waarom lidar is gekozen
+dit kan voor n analyze en adiviseren module zijn
+zoval anal is data ophalen
+en advis is de conclusie
+noem ook implementaties in de echte wereld en waarom
+bereken de kosten
+vraag henk voor zijn lidar sensors
+werk het ontwerp uit
+kogelalgers voor soepele draai
+vergeet niet de beheer (documentatie, git etc)
+beheren analyseren adviseren realiseren
+vertel alles wat hoe en waarom
+kijk die bieb en veld en lab research strategieen, en noem de strategie en bronnen
+bieb is bv je onderzoek naar iets
