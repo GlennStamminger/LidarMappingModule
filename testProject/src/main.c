@@ -34,31 +34,36 @@
 //////////////////
 void measure_task()
 {
-  uart_config_t uartLidar;
-  uartLidar.baud_rate = 115200;
-  uartLidar.data_bits = UART_DATA_8_BITS;
-  uartLidar.parity = UART_PARITY_DISABLE;
-  uartLidar.stop_bits = UART_STOP_BITS_1;
-  uartLidar.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
-  uartLidar.rx_flow_ctrl_thresh = 120;
+  uart_config_t uart_config = {
+  .baud_rate = 115200,
+  .data_bits = UART_DATA_8_BITS,
+  .parity = UART_PARITY_DISABLE,
+  .stop_bits = UART_STOP_BITS_1,
+  .flow_ctrl = UART_HW_FLOWCTRL_CTS_RTS,
+  .rx_flow_ctrl_thresh = 122,
+};
+// Configure UART parameters
+ESP_ERROR_CHECK(uart_param_config(UART_NUM_2, &uart_config));  
 
-  uart_param_config(UART_NUM_1, &uartLidar);
-  uart_set_pin(UART_NUM_1,
-  4, //TX
-  5, //RX
-  UART_PIN_NO_CHANGE,
-  UART_PIN_NO_CHANGE);
+uart_set_pin(UART_NUM_2,
+UART_PIN_NO_CHANGE,  // TX
+UART_PIN_NO_CHANGE,  // RX
+19,                  // RTS
+20                   // CTS
+);
 
-  uart_driver_install(UART_NUM_1, 2048, 2048, 10, 17, NULL);
-  
-  unsigned char buf[100];
-  int size;
-  while(1)
-  {
-    size = uart_read_bytes(UART_NUM_1, buf, sizeof(buf), 1000/portTICK_PERIOD_MS);
-    printf("%d",size);
+// Setup UART buffered IO with event queue
+const int uart_buffer_size = (1024 * 2);
+QueueHandle_t uart_queue;
+// Install UART driver using an event queue here
+ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, uart_buffer_size, 10, &uart_queue, 0));
+uint8_t buf[100];
+int size = 0;
+ESP_ERROR_CHECK(uart_get_buffered_data_len(UART_NUM_2, (size_t*)&size));
+while(1) {
+size = uart_read_bytes(UART_NUM_2, buf, size, 100);
+printf("%d\n",size);
   }
-
 }
 //////////////////
 //SERVO CONTROL
@@ -124,5 +129,5 @@ void app_main()
 {
     printf("Testing mapping module.......\n");
     //xTaskCreate(mcpwm_servo_control, "mcpwm_servo_control", 4096, NULL, 5, NULL);
-    xTaskCreate(measure_task, "uart_sensoring", 1024, NULL, 10, NULL);
+    xTaskCreate(measure_task, "uart_sensoring", 4096, NULL, 10, NULL);
 }
