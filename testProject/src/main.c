@@ -27,43 +27,44 @@
 #define SERVO_MIN_PULSEWIDTH 450 //Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH 2450 //Maximum pulse width in microsecond
 #define SERVO_MAX_DEGREE 180 //Maximum angle the servo can rotate
+#define SENSOR_TXD  (GPIO_NUM_4)
+#define SENSOR_RXD  (GPIO_NUM_5)
+#define SENSOR_RTS  (GPIO_NUM_22)
+#define SENSOR_CTS  (GPIO_NUM_23)
 
 
 ///////////////////
 //SENSOR CONTROL
 //////////////////
-void measure_task()
+
+
+#define BUF_SIZE (128)
+
+static void measure_task()
 {
-  uart_config_t uart_config = {
-  .baud_rate = 115200,
-  .data_bits = UART_DATA_8_BITS,
-  .parity = UART_PARITY_DISABLE,
-  .stop_bits = UART_STOP_BITS_1,
-  .flow_ctrl = UART_HW_FLOWCTRL_CTS_RTS,
-  .rx_flow_ctrl_thresh = 122,
-};
-// Configure UART parameters
-ESP_ERROR_CHECK(uart_param_config(UART_NUM_2, &uart_config));  
+    /* Configure parameters of an UART driver,
+     * communication pins and install the driver */
+    uart_config_t uart_config;
+    uart_config.baud_rate = 115200;
+    uart_config.data_bits = UART_DATA_8_BITS;
+    uart_config.parity    = UART_PARITY;
+    uart_config.stop_bits = UART_STOP_BITS_1;
+    uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+    uart_config.use_ref_tick = true;
 
-uart_set_pin(UART_NUM_2,
-UART_PIN_NO_CHANGE,  // TX
-UART_PIN_NO_CHANGE,  // RX
-19,                  // RTS
-20                   // CTS
-);
+    ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
+    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
+    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0));
 
-// Setup UART buffered IO with event queue
-const int uart_buffer_size = (1024 * 2);
-QueueHandle_t uart_queue;
-// Install UART driver using an event queue here
-ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, uart_buffer_size, 10, &uart_queue, 0));
-uint8_t buf[100];
-int size = 0;
-ESP_ERROR_CHECK(uart_get_buffered_data_len(UART_NUM_2, (size_t*)&size));
-while(1) {
-size = uart_read_bytes(UART_NUM_2, buf, size, 100);
-printf("%d\n",size);
-  }
+    // Configure a temporary buffer for the incoming data
+    uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
+
+    while (1) {
+        // Read data from the UART
+        uart_read_bytes(UART_NUM_1, data, BUF_SIZE, 100);
+        printf("%d\n",data[0]+data[1]);
+    }
+    free(data);
 }
 //////////////////
 //SERVO CONTROL
