@@ -8,8 +8,8 @@
  * red = purple = 5V
  * brown = white = ground
  * SENSOR:
- * yellow = TX = UNDECIDED 
- * white = RX =  UNDECIDED
+ * yellow = TX = GPIO5
+ * white = RX =  GPIO4
  * red = 5V
  * black = ground
  */
@@ -57,12 +57,18 @@ static void measure_task()
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0));
 
     // Configure a temporary buffer for the incoming data
-    uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
+    uint8_t *data = (uint8_t *) malloc(8);
 
     while (1) {
         // Read data from the UART
-        uart_read_bytes(UART_NUM_1, data, BUF_SIZE, 100);
-        printf("%d\n",data[0]+data[1]);
+      int len =  uart_read_bytes(UART_NUM_1, data, 8, 100);
+        printf("%d\n",len);      
+        unsigned int t1 = data[2];
+        unsigned int t2 = data[3];
+        t2 <<= 8;
+        t2 = t2 | t1;
+        printf("%d\n",t2);
+        //printf("%d %d %d %d %d %d %d %d\n",data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
     }
     free(data);
 }
