@@ -1,3 +1,18 @@
+//TEMP CABLE CONFIGURATION LIST
+/**
+ * ARDUINO:
+ * green = ground
+ * blue = 5v
+ * SERVO:
+ * orange = gray = GPIO18
+ * red = purple = 5V
+ * brown = white = ground
+ * SENSOR:
+ * yellow = TX = UNDECIDED 
+ * white = RX =  UNDECIDED
+ * red = 5V
+ * black = ground
+ */
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -5,15 +20,46 @@
 #include "driver/mcpwm.h"
 #include "soc/mcpwm_reg.h"
 #include "soc/mcpwm_struct.h"
+#include "errorchecker.h"
+#include "driver/uart.h"
+
 
 #define SERVO_MIN_PULSEWIDTH 450 //Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH 2450 //Maximum pulse width in microsecond
 #define SERVO_MAX_DEGREE 180 //Maximum angle the servo can rotate
 
+
 ///////////////////
 //SENSOR CONTROL
 //////////////////
+void measure_task()
+{
+  uart_config_t uartLidar;
+  uartLidar.baud_rate = 115200;
+  uartLidar.data_bits = UART_DATA_8_BITS;
+  uartLidar.parity = UART_PARITY_DISABLE;
+  uartLidar.stop_bits = UART_STOP_BITS_1;
+  uartLidar.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+  uartLidar.rx_flow_ctrl_thresh = 120;
 
+  uart_param_config(UART_NUM_1, &uartLidar);
+  uart_set_pin(UART_NUM_1,
+  4, //TX
+  5, //RX
+  UART_PIN_NO_CHANGE,
+  UART_PIN_NO_CHANGE);
+
+  uart_driver_install(UART_NUM_1, 2048, 2048, 10, 17, NULL);
+  
+  unsigned char buf[100];
+  int size;
+  while(1)
+  {
+    size = uart_read_bytes(UART_NUM_1, buf, sizeof(buf), 1000/portTICK_PERIOD_MS);
+    printf("%d",size);
+  }
+
+}
 //////////////////
 //SERVO CONTROL
 /////////////////
@@ -76,6 +122,7 @@ void mcpwm_servo_control(void *arg)
 
 void app_main()
 {
-    printf("Testing servo motor.......\n");
-    xTaskCreate(mcpwm_servo_control, "mcpwm_servo_control", 4096, NULL, 5, NULL);
+    printf("Testing mapping module.......\n");
+    //xTaskCreate(mcpwm_servo_control, "mcpwm_servo_control", 4096, NULL, 5, NULL);
+    xTaskCreate(measure_task, "uart_sensoring", 1024, NULL, 10, NULL);
 }
