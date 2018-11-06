@@ -1,7 +1,9 @@
-https://www.instructables.com/id/Interfacing-Servo-Motor-With-ESP32/
+https://esp32.com/viewtopic.php?t=3009
 
-http://icircuit.net/esp-idf-connected-servo-control-servo-remote-location/2101
+https://github.com/espressif/arduino-esp32/issues/118
 
-https://github.com/espressif/esp-idf/blob/1e0ba341776c75515e5a3c94486487282a2d1e9b/examples/peripherals/mcpwm/mcpwm_servo_control/main/mcpwm_servo_control_example.c
+https://github.com/espressif/arduino-esp32/blob/master/tools/sdk/include/driver/driver/i2c.h
 
-https://www.freertos.org/a00125.html
+https://www.esp32.com/viewtopic.php?t=5527
+
+https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/ESPNow/Basic/Slave/Slave.ino
