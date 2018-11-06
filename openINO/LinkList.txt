@@ -1,0 +1,7 @@
+https://www.instructables.com/id/Interfacing-Servo-Motor-With-ESP32/
+
+http://icircuit.net/esp-idf-connected-servo-control-servo-remote-location/2101
+
+https://github.com/espressif/esp-idf/blob/1e0ba341776c75515e5a3c94486487282a2d1e9b/examples/peripherals/mcpwm/mcpwm_servo_control/main/mcpwm_servo_control_example.c
+
+https://www.freertos.org/a00125.html

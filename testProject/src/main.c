@@ -66,8 +66,8 @@ static void measure_task()
         unsigned int t1 = data[2];
         unsigned int t2 = data[3];
         t2 <<= 8;
-        t2 = t2 | t1;
-        //printf("%d\n",t2);
+        t2 += t1;
+        printf("t2: %d\n",t2);
         printf("%d\n",data[2] + data[3]);
     }
     free(data);
