@@ -42,68 +42,57 @@
 
 static void measure_task()
 {
-    /* Configure parameters of an UART driver,
-     * communication pins and install the driver */
-    uart_config_t uart_config;
-    uart_config.baud_rate = 115200;
-    uart_config.data_bits = UART_DATA_8_BITS;
-    uart_config.parity    = UART_PARITY;
-    uart_config.stop_bits = UART_STOP_BITS_1;
-    uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
-    uart_config.use_ref_tick = true;
+  /* Configure parameters of an UART driver,
+  * communication pins and install the driver */
+  uart_config_t uart_config;
+  uart_config.baud_rate = 115200;
+  uart_config.data_bits = UART_DATA_8_BITS;
+  uart_config.parity    = UART_PARITY;
+  uart_config.stop_bits = UART_STOP_BITS_1;
+  uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+  uart_config.use_ref_tick = true;
 
-    ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
-    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
-    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0));
+  ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
+  ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
+  ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0));
 
-    // Configure a temporary buffer for the incoming data
-    uint8_t *data = (uint8_t *) malloc(9);
+  // Configure a temporary buffer for the incoming data
+  uint8_t *data = (uint8_t *) malloc(9);
 
-    while (1) {
-        // Read data from the UART
-        uint8_t testarray[1];
-      int len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-      if(len == 1 && testarray[0] == 0x59)
+  while (1) {
+  // Read data from the UART
+  uint8_t testarray[1];
+  int len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
+  if(len == 1 && testarray[0] == 0x59)
+  {
+    //printf("complete frame detected\n");
+    len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
+    if(len == 1  && testarray[0] == 0x59)
+    {
+      //printf("starter frame detected\n");
+      int firstbytelength =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
+      unsigned int t1 = testarray[0];
+      int secondbytelength = uart_read_bytes(UART_NUM_1, testarray, 1, 100);
+      unsigned int t2 = testarray[0];
+      if(firstbytelength ==1 && secondbytelength ==1)
       {
-          //printf("complete frame detected\n");
-              len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-              if(len == 1  && testarray[0] == 0x59)
-              {
-                  //printf("starter frame detected\n");
-                 int firstbytelength =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-                  unsigned int t1 = testarray[0];
-                  int secondbytelength = uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-                  unsigned int t2 = testarray[0];
-                  if(firstbytelength ==1 && secondbytelength ==1)
-                  {
-                    t2 <<= 8;
-                  t2 += t1;
-                  printf("length: %d\n", t2);
-                  }
-                  else{
-
-                  }
-                  
-              }
-              //lees de andere 5 bytes nog weg
-              //het probleem was dat hij alle bytes tegelijk las en dus soms verkeerde bytes las
-/*
-            printf("frame header detected\n");
-            printf("length: \n");  
-            unsigned int t1 = data[2];
-            unsigned int t2 = data[3];
-            t2 <<= 8;
-            t2 += t1;
-            printf("t2: %d\n",t2);
-            printf("%d\n",data[2] + data[3]);*/
-          
+        t2 <<= 8;
+        t2 += t1;
+        printf("length: %d\n", t2);
       }
       else
       {
-          //printf("incomplete frame read\n");
-      }
-      
+
+      }            
     }
+              //lees de andere 5 bytes nog weg    
+  }
+  else
+  {
+    //printf("incomplete frame read\n");
+  }
+      
+}
     free(data);
 }
 //////////////////
