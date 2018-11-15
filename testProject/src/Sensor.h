@@ -3,17 +3,17 @@
 #define SENSOR_H
 
 /**
- * @brief Set the Uart Config Lidar object
+ * @brief Sets the uart configuration
  * 
  * @return uart_config_t 
  */
 uart_config_t SetUartConfigLidar();
 
 /**
- * @brief 
+ * @brief measures the distance from the sensor
  * 
- * @param uartPort 
- * @return int 
+ * @param uartPort the port on which the sensor's TX pin is placed 
+ * @return the measured distance
  */
 int MeasureDistance(int uartPort);
 

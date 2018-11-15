@@ -29,7 +29,7 @@ int MeasureDistance(int uartPort)
     reader =  uart_read_bytes(uartPort, fillerArray, 1, 100);
     if(reader == 1  && fillerArray[0] == 0x59)
     {
-      printf("complete frame detected\n");
+      //printf("complete frame detected\n");
       reader =  uart_read_bytes(uartPort, fillerArray, 1, 100);
       if(reader != 1)
       {

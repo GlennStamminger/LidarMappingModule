@@ -5,6 +5,7 @@
     },
     "editor.tabSize": 2,
     "files.associations": {
-        "uart.h": "c"
+        "uart.h": "c",
+        "stdio.h": "c"
     }
 }
