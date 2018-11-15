@@ -1,4 +1,6 @@
-//CABLE CONFIGURATION LIST
+/////////////////////////
+//CABLE CONFIGURATION
+/////////////////////////
 /**
  * ARDUINO:
  * green---------->ground
@@ -13,6 +15,10 @@
  * red------------>5V
  * black---------->ground
  */
+
+/////////////////////////
+//INCLUDES
+/////////////////////////
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -25,9 +31,9 @@
 #include "Sensor.h"
 #include "Servo.h"
 
-///////////////////
-//DEFINITIONS
-///////////////////
+/////////////////////////
+//DEFINITION
+/////////////////////////
 #define SERVO_MIN_PULSEWIDTH 450      //Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH 2450     //Maximum pulse width in microsecond
 #define SERVO_MAX_DEGREE 180          //Maximum angle the servo can rotate
@@ -39,20 +45,20 @@
 #define SENSOR_PORT UART_NUM_1        //uart port
 #define BUF_SIZE (128)                //buffer size
 
-///////////////////
+/////////////////////////
 //VARIABLES
-///////////////////
+/////////////////////////
 int measuredDistance = 0;
 
-///////////////////
+/////////////////////////
 //SENSOR CONTROL
-///////////////////
-static void sensor_task()
+/////////////////////////
+void SensorTask(void *arg)
 { 
   //set uart parameters
   uart_config_t uart_config = SetUartConfigLidar();
 
-  /* Configure parameters of a uart driver,
+  /* configure parameters of the uart driver,
   * communication pins and install the driver */
   ESP_ERROR_CHECK(uart_param_config(SENSOR_PORT, &uart_config));
   ESP_ERROR_CHECK(uart_set_pin(SENSOR_PORT, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
@@ -60,15 +66,15 @@ static void sensor_task()
 
   while (1) 
   {
-    // Read data from the UART
+    //read data from the uart pin
     measuredDistance = MeasureDistance(SENSOR_PORT);
   }  
 }
 
-//////////////////
+/////////////////////////
 //SERVO CONTROL
-/////////////////
-void servo_task(void *arg)
+/////////////////////////
+void ServoTask(void *arg)
 {
   uint32_t pulse, angle;
 
@@ -100,9 +106,24 @@ void servo_task(void *arg)
   }
 }
 
+/////////////////////////
+//COMMUNICATION CONTROL
+/////////////////////////
+void CommunicationTask(void *arg)
+{
+
+}
+
+/////////////////////////
+//MAIN
+/////////////////////////
 void app_main()
 {
   printf("Initialising mapping module.......\n");
-  xTaskCreate(servo_task, "servo_control", 4096, NULL, 5, NULL);
-  xTaskCreate(sensor_task, "sensor_control", 4096, NULL, 10, NULL);
+  //untested
+  //xTaskCreate(ServoTask, "servo_control", 4096, NULL, 5, NULL);
+  //untested
+  //xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 10, NULL);
+  //incomplete
+  //xTaskCreate(CommunicationTask, "communication_control", 4096, NULL, 5, NULL);
 }
