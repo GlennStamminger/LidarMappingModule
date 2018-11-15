@@ -1,6 +1,20 @@
+#include <driver/uart.h>
 #ifndef SENSOR_H
 #define SENSOR_H
 
-void SetUartConfig(int baudrate, enum databits, enum parity, enum stopbit, enum flowcontrol, bool refticks);
+/**
+ * @brief Set the Uart Config Lidar object
+ * 
+ * @return uart_config_t 
+ */
+uart_config_t SetUartConfigLidar();
+
+/**
+ * @brief 
+ * 
+ * @param uartPort 
+ * @return int 
+ */
+int MeasureDistance(int uartPort);
 
 #endif

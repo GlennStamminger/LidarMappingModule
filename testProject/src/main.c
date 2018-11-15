@@ -22,6 +22,7 @@
 #include "soc/mcpwm_struct.h"
 #include "errorchecker.h"
 #include "driver/uart.h"
+#include "Sensor.h"
 
 
 #define SERVO_MIN_PULSEWIDTH 450 //Minimum pulse width in microsecond
@@ -31,69 +32,27 @@
 #define SENSOR_RXD  (GPIO_NUM_5)
 #define SENSOR_RTS  (GPIO_NUM_22)
 #define SENSOR_CTS  (GPIO_NUM_23)
-
+#define SENSOR_PORT UART_NUM_1
+#define BUF_SIZE (128)
 
 ///////////////////
 //SENSOR CONTROL
 //////////////////
-
-
-#define BUF_SIZE (128)
-
 static void measure_task()
 {
   /* Configure parameters of an UART driver,
   * communication pins and install the driver */
-  uart_config_t uart_config;
-  uart_config.baud_rate = 115200;
-  uart_config.data_bits = UART_DATA_8_BITS;
-  uart_config.parity    = UART_PARITY;
-  uart_config.stop_bits = UART_STOP_BITS_1;
-  uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
-  uart_config.use_ref_tick = true;
+  uart_config_t uart_config = SetUartConfigLidar();
 
-  ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
-  ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
-  ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0));
+  ESP_ERROR_CHECK(uart_param_config(SENSOR_PORT, &uart_config));
+  ESP_ERROR_CHECK(uart_set_pin(SENSOR_PORT, SENSOR_TXD, SENSOR_RXD, SENSOR_RTS, SENSOR_CTS));
+  ESP_ERROR_CHECK(uart_driver_install(SENSOR_PORT, BUF_SIZE * 2, 0, 0, NULL, 0));
 
-  // Configure a temporary buffer for the incoming data
-  uint8_t *data = (uint8_t *) malloc(9);
-
-  while (1) {
+  while (1) 
+  {
   // Read data from the UART
-  uint8_t testarray[1];
-  int len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-  if(len == 1 && testarray[0] == 0x59)
-  {
-    //printf("complete frame detected\n");
-    len =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-    if(len == 1  && testarray[0] == 0x59)
-    {
-      //printf("starter frame detected\n");
-      int firstbytelength =  uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-      unsigned int t1 = testarray[0];
-      int secondbytelength = uart_read_bytes(UART_NUM_1, testarray, 1, 100);
-      unsigned int t2 = testarray[0];
-      if(firstbytelength ==1 && secondbytelength ==1)
-      {
-        t2 <<= 8;
-        t2 += t1;
-        printf("length: %d\n", t2);
-      }
-      else
-      {
-
-      }            
-    }
-              //lees de andere 5 bytes nog weg    
-  }
-  else
-  {
-    //printf("incomplete frame read\n");
-  }
-      
-}
-    free(data);
+  printf("Distance: %d\n",MeasureDistance(SENSOR_PORT));
+  }  
 }
 //////////////////
 //SERVO CONTROL
