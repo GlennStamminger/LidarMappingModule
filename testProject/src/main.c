@@ -121,9 +121,9 @@ void app_main()
 {
   printf("Initialising mapping module.......\n");
   //untested
-  //xTaskCreate(ServoTask, "servo_control", 4096, NULL, 5, NULL);
+  xTaskCreate(ServoTask, "servo_control", 4096, NULL, 5, NULL);
   //untested
-  //xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 10, NULL);
+  xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 10, NULL);
   //incomplete
   //xTaskCreate(CommunicationTask, "communication_control", 4096, NULL, 5, NULL);
 }

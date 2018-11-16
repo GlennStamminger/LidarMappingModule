@@ -4,13 +4,13 @@
 #include "soc/mcpwm_struct.h"
 #include "Servo.h"
 
-static void SetServoPin(int gpioNumber)
+void SetServoPin(int gpioNumber)
 {
   //initializes a pin as pwm
   mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, gpioNumber);
 }
 
-static uint32_t CalculatePulseWidth(uint32_t currentAngle, int maxPulseWidth, int minPulseWidth, int maxRotation)
+uint32_t CalculatePulseWidth(uint32_t currentAngle, int maxPulseWidth, int minPulseWidth, int maxRotation)
 {
   uint32_t pulseWidth = 0;
   pulseWidth = (minPulseWidth + (((maxPulseWidth - minPulseWidth) * (currentAngle)) / (maxRotation)));
@@ -28,13 +28,13 @@ mcpwm_config_t SetMcpwmConfiguration()
   return pwmDefaultConfig;
 }
 
-static void ConfigureMcpwm(mcpwm_config_t pwmConfig)
+void ConfigureMcpwm(mcpwm_config_t pwmConfig)
 {
   //initialisez the pwm configuration
   mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwmConfig); 
 }
 
-static void SetAngle(uint32_t pulse)
+void SetAngle(uint32_t pulse)
 {
   //sends to pulsewidth to the servo which sets the angle
   mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, pulse);

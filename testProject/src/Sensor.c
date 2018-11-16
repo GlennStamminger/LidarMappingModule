@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "errorchecker.h"
 #include "driver/uart.h"
 #include "Sensor.h"
 
