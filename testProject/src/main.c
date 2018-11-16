@@ -30,6 +30,7 @@
 #include "driver/uart.h"
 #include "Sensor.h"
 #include "Servo.h"
+#include "driver/i2c.h"
 
 /////////////////////////
 //DEFINITION
