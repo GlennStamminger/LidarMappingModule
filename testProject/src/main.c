@@ -48,7 +48,8 @@
 /////////////////////////
 //VARIABLES
 /////////////////////////
-int measuredDistance = 0;
+uint8_t measuredDistance = 0;
+uint8_t distanceMap[180];
 
 /////////////////////////
 //SENSOR CONTROL
@@ -87,7 +88,8 @@ void ServoTask(void *arg)
   {
     for (angle = 0; angle < SERVO_MAX_DEGREE; angle++)
     {
-      printf("Distance: %d | Angle: %d\n",measuredDistance, angle);
+      distanceMap[angle] = measuredDistance;
+      printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
       pulse = CalculatePulseWidth(angle, SERVO_MAX_PULSEWIDTH, SERVO_MIN_PULSEWIDTH, SERVO_MAX_DEGREE);
       //set servo to current angle
@@ -96,13 +98,13 @@ void ServoTask(void *arg)
     vTaskDelay(5);
     for(angle = SERVO_MAX_DEGREE -1; angle > 0; angle--)
     {
-      printf("Distance: %d | Angle: %d\n",measuredDistance, angle);
+      distanceMap[angle] = measuredDistance;
+      printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
       pulse = CalculatePulseWidth(angle, SERVO_MAX_PULSEWIDTH, SERVO_MIN_PULSEWIDTH, SERVO_MAX_DEGREE);
       //set servo to current angle
       SetAngle(pulse);
     }
-    vTaskDelay(5);
   }
 }
 
@@ -120,10 +122,10 @@ void CommunicationTask(void *arg)
 void app_main()
 {
   printf("Initialising mapping module.......\n");
-  //untested
+  //functional
   xTaskCreate(ServoTask, "servo_control", 4096, NULL, 5, NULL);
-  //untested
-  xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 10, NULL);
+  //functional
+  xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 5, NULL);
   //incomplete
   //xTaskCreate(CommunicationTask, "communication_control", 4096, NULL, 5, NULL);
 }

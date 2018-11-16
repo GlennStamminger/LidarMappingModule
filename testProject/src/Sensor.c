@@ -16,11 +16,11 @@ uart_config_t SetUartConfigLidar()
 }
 
 //get current distance
-int MeasureDistance(int uartPort)
+uint8_t MeasureDistance(int uartPort)
 {
   int reader;
-  unsigned int t1 = 0;
-  unsigned int t2 = 0;
+  uint8_t t1 = 0;
+  uint8_t t2 = 0;
   uint8_t fillerArray[1];
   reader = uart_read_bytes(uartPort, fillerArray, 1, 100);
   if(reader == 1 && fillerArray[0] == 0x59)

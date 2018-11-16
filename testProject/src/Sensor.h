@@ -15,6 +15,6 @@ uart_config_t SetUartConfigLidar();
  * @param uartPort the port on which the sensor's TX pin is placed 
  * @return the measured distance
  */
-int MeasureDistance(int uartPort);
+uint8_t MeasureDistance(int uartPort);
 
 #endif
