@@ -51,6 +51,7 @@
 /////////////////////////
 uint8_t measuredDistance = 0;
 uint8_t distanceMap[180];
+uint32_t pulse, angle;
 
 /////////////////////////
 //SENSOR CONTROL
@@ -70,6 +71,7 @@ void SensorTask(void *arg)
   {
     //read data from the uart pin
     measuredDistance = MeasureDistance(SENSOR_PORT);
+    distanceMap[angle] = measuredDistance;
   }  
 }
 
@@ -78,8 +80,6 @@ void SensorTask(void *arg)
 /////////////////////////
 void ServoTask(void *arg)
 {
-  uint32_t pulse, angle;
-
   //set pin and configure pwm settings
   SetServoPin(SERVO_GPIO);
   mcpwm_config_t pwm_config = SetMcpwmConfiguration();
@@ -89,7 +89,6 @@ void ServoTask(void *arg)
   {
     for (angle = 0; angle < SERVO_MAX_DEGREE; angle++)
     {
-      distanceMap[angle] = measuredDistance;
       printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
       pulse = CalculatePulseWidth(angle, SERVO_MAX_PULSEWIDTH, SERVO_MIN_PULSEWIDTH, SERVO_MAX_DEGREE);
@@ -99,7 +98,6 @@ void ServoTask(void *arg)
     vTaskDelay(5);
     for(angle = SERVO_MAX_DEGREE -1; angle > 0; angle--)
     {
-      distanceMap[angle] = measuredDistance;
       printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
       pulse = CalculatePulseWidth(angle, SERVO_MAX_PULSEWIDTH, SERVO_MIN_PULSEWIDTH, SERVO_MAX_DEGREE);
@@ -107,14 +105,6 @@ void ServoTask(void *arg)
       SetAngle(pulse);
     }
   }
-}
-
-/////////////////////////
-//COMMUNICATION CONTROL
-/////////////////////////
-void CommunicationTask(void *arg)
-{
-
 }
 
 /////////////////////////
@@ -127,6 +117,4 @@ void app_main()
   xTaskCreate(ServoTask, "servo_control", 4096, NULL, 5, NULL);
   //functional
   xTaskCreate(SensorTask, "sensor_control", 4096, NULL, 5, NULL);
-  //incomplete
-  //xTaskCreate(CommunicationTask, "communication_control", 4096, NULL, 5, NULL);
 }
