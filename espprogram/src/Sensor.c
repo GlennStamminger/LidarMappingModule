@@ -59,3 +59,12 @@ uint8_t MeasureDistance(int uartPort)
   return 0;
   
 }
+
+//send data to brain unit
+void SendDistance(int uartPort, uint8_t distance)
+{
+  uint8_t fillerArray[1];
+  fillerArray[0] = distance;
+  size_t size = sizeof(fillerArray);
+  uart_write_bytes(uartPort, (const char*)fillerArray, size);
+}

@@ -17,4 +17,12 @@ uart_config_t SetUartConfigLidar();
  */
 uint8_t MeasureDistance(int uartPort);
 
+/**
+ * @brief sends the distance to the brain
+ * 
+ * @param uartPort the port on which the sensor's RX pin is placed
+ * @param distance the data to be sent
+ */
+void SendDistance(int uartPort, uint8_t distance);
+
 #endif

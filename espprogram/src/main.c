@@ -38,6 +38,7 @@
 #define SERVO_MIN_PULSEWIDTH 450      //Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH 2450     //Maximum pulse width in microsecond
 #define SERVO_MAX_DEGREE 180          //Maximum angle the servo can rotate
+#define SERVO_MIN_DEGREE 0            //Minimum angle the servo can rotate
 #define SERVO_GPIO 18                 //servo control gpio
 #define SENSOR_TXD  (GPIO_NUM_4)      //transmit gpio
 #define SENSOR_RXD  (GPIO_NUM_5)      //recieve gpio
@@ -52,6 +53,7 @@
 uint8_t measuredDistance = 0;
 uint8_t distanceMap[180];
 uint32_t pulse, angle;
+uint8_t tester = 5;
 
 /////////////////////////
 //SENSOR CONTROL
@@ -72,6 +74,7 @@ void SensorTask(void *arg)
     //read data from the uart pin
     measuredDistance = MeasureDistance(SENSOR_PORT);
     distanceMap[angle] = measuredDistance;
+    //SendDistance(SENSOR_PORT, tester);
   }  
 }
 
@@ -87,7 +90,7 @@ void ServoTask(void *arg)
 
   while (1) 
   {
-    for (angle = 0; angle < SERVO_MAX_DEGREE; angle++)
+    for (angle = SERVO_MIN_DEGREE; angle < SERVO_MAX_DEGREE; angle++)
     {
       printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
@@ -96,7 +99,7 @@ void ServoTask(void *arg)
       SetAngle(pulse);           
     }
     vTaskDelay(5);
-    for(angle = SERVO_MAX_DEGREE -1; angle > 0; angle--)
+    for(angle = SERVO_MAX_DEGREE -1; angle > SERVO_MIN_DEGREE; angle--)
     {
       printf("Distance: %d | Angle: %d\n",distanceMap[angle], angle);
       //calculate pulsewidth at current angle
