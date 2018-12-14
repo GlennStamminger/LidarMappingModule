@@ -8,24 +8,24 @@
  * @copyright Copyright (c) 2018
  * 
  */
-#include <stdint.h>
-#include <stdio.h>
-#include <wiringPi.h>
+#include "IUart.h"
 
-
-#ifndef UART_H
-#define UART_H
-
-class Uart
+class Uart : public IUart
 {
-  public:
-    Uart(int TXpin);
-    ~Uart();
-    void ReadUartByte();
-    //uint8_t ReadTFMiniLidar(int sensor);
-  private:
-    uint8_t measuredDistance;
-    int TXpin;
-};
+private:
+  int8_t currentByte;
+  uint8_t readStartSymbols;
+  uint8_t readDataSymbols;
+  uint16_t recievedDistance;
+  uint16_t recievedBuffer;
+  int fd;
+  bool isReadingData;
+  void InitSerial();
+  void DeInitSerial();
 
-#endif
+public:
+  Uart();
+  ~Uart();
+  void TfMiniDistance();
+  const uint16_t& ReturnDistance() const;
+};
