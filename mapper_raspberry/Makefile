@@ -14,6 +14,9 @@ CFLAGS = -Wall -Werror -ggdb -O0 -std=c++11 -lwiringPi -lpthread
 SRC_DIR = ./src
 
 SOURCES = $(SRC_DIR)/main.cpp \
+					$(SRC_DIR)/MappingLogic.cpp \
+					$(SRC_DIR)/Pwm.cpp \
+					$(SRC_DIR)/Servo.cpp \
 					$(SRC_DIR)/Uart.cpp
 
 #Objects

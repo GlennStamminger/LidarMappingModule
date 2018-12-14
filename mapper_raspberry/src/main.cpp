@@ -5,28 +5,24 @@
  *
  */
 
-#include "Uart.h"
+#include "MappingLogic.h"
 #include "ThreadHandler.h"
+//ZET DE NIEUWE PWM ER IN
+ MappingLogic *myMapper = new MappingLogic();
 
- Uart *myUart = new Uart();
-
-void RunLidar(Uart* uart)
-{
-  while(1)
-  {
-    myUart->TfMiniDistance();
-  }
-}
+ void MappingLogicUpdate(MappingLogic* mapper)
+ {
+   while(1) mapper->Update();
+ }
 
 int main ()
 {
-  // Loop, getting and printing characters
-   ThreadHandler<Uart*> thread(RunLidar, myUart);
+   ThreadHandler<MappingLogic*> thread(MappingLogicUpdate, myMapper);
    while(1)
    {
-     std::cout<<"read: "<<myUart->ReturnDistance()<<std::endl;
+     //here is the rest of the code
    }
-  delete myUart;
+  delete myMapper;
   return 0;
 }
 

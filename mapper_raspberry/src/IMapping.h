@@ -4,20 +4,19 @@
 #include <vector>
 #include <wiringPi.h>
 #include <wiringSerial.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <vector>
+#include "ThreadHandler.h"
+#include "Servo.h"
+#include "Uart.h"
+
 
 class IMapping
 {
   public:
     virtual ~IMapping(){};
-
-    /**
-    *checks if communication is succesfull
-    *1 = success | 0 = failure
-    */
-    virtual int GetStatus() = 0;
-
-    //  Returns the distance given an angle
-    virtual int GetDistanceAtAngle(int angle) = 0;
 
     //  Returns array with the distances of all visible objects
     virtual std::vector<int> GetMap() = 0;

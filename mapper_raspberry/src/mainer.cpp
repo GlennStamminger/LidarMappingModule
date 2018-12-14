@@ -10,11 +10,7 @@ void PwmUpdate(Pwm* pwm)
 
 int main(int argc, char *argv[])
 {
-  if(wiringPiSetup() < 0)
-  {
-    printf("ERROR: Could not initialize wiring pi.\n");
-    return 1;
-  }
+  
 
   //Init pwm.
   Pwm::GetInstance()->Init(50, 1024);
