@@ -19,7 +19,7 @@ class IMapping
     virtual ~IMapping(){};
 
     //  Returns array with the distances of all visible objects
-    virtual std::vector<int> GetMap() = 0;
+    virtual uint16_t* GetMap() = 0;
 
     //initialises the mapping
     virtual void Update() = 0;

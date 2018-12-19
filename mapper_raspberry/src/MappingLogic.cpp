@@ -1,14 +1,15 @@
 #include "MappingLogic.h"
 
-//Definitions
-#define SERVO_PIN 15
-#define SERVO_MAX_DEGREE 180
-
 //Constructor
 MappingLogic::MappingLogic()
     : distance(0)
 {
-  this->servo = new Servo(SERVO_PIN, 0, 180, 90);
+  if (wiringPiSetup () == -1)
+  {
+    printf("failed to setup");
+    exit (1);
+  }
+  this->servo = new Servo(SERVO_PIN, SERVO_MIN_DEGREE, SERVO_MAX_DEGREE, SERVO_HALF_DEGREE);
   this->uart = new Uart();
 
   ThreadHandler<Uart *> thread(RunLidar, this->uart);
@@ -20,10 +21,7 @@ MappingLogic::~MappingLogic()
   std::cout<<"ending mapping"<<std::endl;
   delete this->uart;
 }
-
-//Variables
-std::vector<int> distanceMap(SERVO_MAX_DEGREE);
-
+ 
 void MappingLogic::Update()
 {
   //has to become delta time
@@ -52,15 +50,15 @@ void MappingLogic::Update()
       }
     }
 
-    //this->distance = this->uart->ReturnDistance();
+    this->distance = this->uart->ReturnDistance();
     this->servo->SetAngle(this->currentStep);
     usleep(3600);
   }
 }
 
-std::vector<int> MappingLogic::GetMap()
+uint16_t* MappingLogic::GetMap()
 {
-  return distanceMap;
+  return this->distanceMap;
 }
 
 static void RunLidar(Uart *uart)

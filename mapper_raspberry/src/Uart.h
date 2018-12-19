@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2018
  * 
  */
+#ifndef UART_H
+#define UART_H
 #include "IUart.h"
 
 class Uart : public IUart
@@ -29,3 +31,5 @@ public:
   void TfMiniDistance();
   const uint16_t& ReturnDistance() const;
 };
+
+#endif
