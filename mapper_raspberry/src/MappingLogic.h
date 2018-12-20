@@ -8,6 +8,9 @@
 #define SERVO_HALF_DEGREE (90)
 #define SERVO_MAX_DEGREE (180)
 #define MAP_LINES (5)
+#define DEGREES_PER_STEP (180.0/MAP_LINES)
+#define DELAY_PER_DEGREE (2600)
+#define DELAY_PER_STEP (DEGREES_PER_STEP * DELAY_PER_DEGREE)
 
 class MappingLogic : public IMapping
 {

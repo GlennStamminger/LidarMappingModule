@@ -1,5 +1,0 @@
-\
-					$(SRC_DIR)/MappingLogic.cpp \
-					$(SRC_DIR)/Pwm.cpp \
-					$(SRC_DIR)/Servo.cpp \
-					$(SRC_DIR)/Uart.cpp

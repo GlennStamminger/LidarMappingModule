@@ -27,7 +27,7 @@ void MappingLogic::Update()
       //Move up.
       this->currentStep++;
       //If out of bounds flip direction.
-      if (this->currentStep >= 179)
+      if (this->currentStep >= MAP_LINES)
       {
         this->stepMovingUp = false;
       }
@@ -43,9 +43,9 @@ void MappingLogic::Update()
       }
     }
 
+    this->servo->SetAngle(DEGREES_PER_STEP*this->currentStep);
+    usleep(DELAY_PER_STEP);
     this->SetMap();
-    this->servo->SetAngle(this->currentStep);
-    usleep(3600);
 }
 
 uint16_t* MappingLogic::GetMap()
@@ -55,31 +55,7 @@ uint16_t* MappingLogic::GetMap()
 
 void MappingLogic::SetMap()
 {
-  if(this->currentStep == 1)
-  {
-    distanceMap[0] = this->uart->ReturnDistance();
-  }
-  else if(this->currentStep == 45)
-  {
-    distanceMap[1] = this->uart->ReturnDistance();
-  }
-  else if(this->currentStep == 90)
-  {
-    distanceMap[2] = this->uart->ReturnDistance();
-  }
-  else if(this->currentStep == 135)
-  {
-    distanceMap[3] = this->uart->ReturnDistance();
-  }
-  else if(this->currentStep == 179)
-  {
-    distanceMap[4] = this->uart->ReturnDistance();
-  }
-  else
-  {
-    //irrelevant angles
-    //std::cout<<"readirrelevant: "<<this->uart->ReturnDistance()<<std::endl;
-  }
+  this->distanceMap[this->currentStep] = this->uart->ReturnDistance();
 }
 
 void MappingLogic::InitMappingLogic()

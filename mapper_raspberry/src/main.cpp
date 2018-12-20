@@ -20,7 +20,7 @@ void PwmUpdate(Pwm* pwm)
   while(1) pwm->Update();
 }
 
-static void MappingLogicUpdate(MappingLogic* mapper)
+void MappingLogicUpdate(MappingLogic* mapper)
 {
   std::cout<<"map loop"<<std::endl;
   while(1)
