@@ -9,14 +9,11 @@
 #define SERVO_MAX_DEGREE (180)
 #define MAP_LINES (5)
 
-//static void RunLidar(Uart *uart);
-
 class MappingLogic : public IMapping
 {
 private:
   Servo *servo;
   Uart *uart;
-  uint16_t distance;
   uint8_t currentStep;
   bool stepMovingUp = true;
   uint16_t distanceMap[MAP_LINES];

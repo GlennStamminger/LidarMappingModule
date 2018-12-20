@@ -10,7 +10,6 @@ static void RunLidar(Uart *uart)
 
 //Constructor
 MappingLogic::MappingLogic()
-    : distance(0)
 {
   this->InitMappingLogic();
 }
@@ -23,8 +22,6 @@ MappingLogic::~MappingLogic()
  
 void MappingLogic::Update()
 {
-  //has to become delta time
-
     if (this->stepMovingUp)
     {
       //Move up.
