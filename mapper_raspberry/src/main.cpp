@@ -12,26 +12,36 @@
 #include "ThreadHandler.h"
 
 MappingLogic *myMapper = new MappingLogic();
+ThreadHandler<MappingLogic*>* mappingThread;
+uint16_t* map;
 
-void MappingLogicUpdate(MappingLogic* mapper)
+void PwmUpdate(Pwm* pwm) 
 {
-  while(1) mapper->Update();
+  while(1) pwm->Update();
+}
+
+static void MappingLogicUpdate(MappingLogic* mapper)
+{
+  std::cout<<"map loop"<<std::endl;
+  while(1)
+  {
+    mapper->Update();
+  }
 }
 
 int main ()
 {
-  //check if this can be removed
-  if (wiringPiSetup () == -1)
-  {
-    printf("failed to setup");
-    exit (1);
-  }
+  mappingThread = new ThreadHandler<MappingLogic*>(MappingLogicUpdate, myMapper);
+  //Init pwm.
+  Pwm::GetInstance()->Init(50, 1024);
 
-  ThreadHandler<MappingLogic*> thread(MappingLogicUpdate, myMapper);
+  //Create pwm thread.
+  ThreadHandler<Pwm*> thread(PwmUpdate, Pwm::GetInstance());
   while(1)
   {
-    //here is the rest of the code
+    map = myMapper->GetMap();
   }
+  delete mappingThread;
   delete myMapper;
   return 0;
 }

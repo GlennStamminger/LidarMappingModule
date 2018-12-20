@@ -1,37 +1,34 @@
 #include "MappingLogic.h"
 
+static void RunLidar(Uart *uart)
+{
+  while (1)
+  { 
+    uart->TfMiniDistance();
+  }
+}
+
 //Constructor
 MappingLogic::MappingLogic()
     : distance(0)
 {
-  if (wiringPiSetup () == -1)
-  {
-    printf("failed to setup");
-    exit (1);
-  }
-  this->servo = new Servo(SERVO_PIN, SERVO_MIN_DEGREE, SERVO_MAX_DEGREE, SERVO_HALF_DEGREE);
-  this->uart = new Uart();
-
-  ThreadHandler<Uart *> thread(RunLidar, this->uart);
-  Update();
+  this->InitMappingLogic();
 }
 
 MappingLogic::~MappingLogic()
 {
-  std::cout<<"ending mapping"<<std::endl;
+  delete this->uartThread;
   delete this->uart;
 }
  
 void MappingLogic::Update()
 {
   //has to become delta time
-  if (1)
-  {
+
     if (this->stepMovingUp)
     {
       //Move up.
       this->currentStep++;
-
       //If out of bounds flip direction.
       if (this->currentStep >= 179)
       {
@@ -42,7 +39,6 @@ void MappingLogic::Update()
     {
       //Move down.
       this->currentStep--;
-
       //If out of bounds flip direction.
       if (this->currentStep <= 0)
       {
@@ -50,10 +46,9 @@ void MappingLogic::Update()
       }
     }
 
-    this->distance = this->uart->ReturnDistance();
+    this->SetMap();
     this->servo->SetAngle(this->currentStep);
     usleep(3600);
-  }
 }
 
 uint16_t* MappingLogic::GetMap()
@@ -61,11 +56,46 @@ uint16_t* MappingLogic::GetMap()
   return this->distanceMap;
 }
 
-static void RunLidar(Uart *uart)
+void MappingLogic::SetMap()
 {
-  while (1)
+  if(this->currentStep == 1)
   {
-    uart->TfMiniDistance();
+    distanceMap[0] = this->uart->ReturnDistance();
+  }
+  else if(this->currentStep == 45)
+  {
+    distanceMap[1] = this->uart->ReturnDistance();
+  }
+  else if(this->currentStep == 90)
+  {
+    distanceMap[2] = this->uart->ReturnDistance();
+  }
+  else if(this->currentStep == 135)
+  {
+    distanceMap[3] = this->uart->ReturnDistance();
+  }
+  else if(this->currentStep == 179)
+  {
+    distanceMap[4] = this->uart->ReturnDistance();
+  }
+  else
+  {
+    //irrelevant angles
+    //std::cout<<"readirrelevant: "<<this->uart->ReturnDistance()<<std::endl;
   }
 }
+
+void MappingLogic::InitMappingLogic()
+{
+  if (wiringPiSetup () == -1)
+  {
+    printf("failed to setup");
+    exit (1);
+  }
+  this->servo = new Servo(SERVO_PIN, SERVO_MIN_DEGREE, SERVO_MAX_DEGREE, SERVO_HALF_DEGREE);
+  this->uart = new Uart();
+  this->uartThread = new ThreadHandler<Uart*>(RunLidar, this->uart);
+}
+
+
 

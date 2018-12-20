@@ -40,5 +40,5 @@ void Servo::SetAngle(uint8_t angle)
   else if(angle < this->minAngle) angle = this->minAngle;
 
   //Set duty cycle.
-  Pwm::GetInstance()->SetDutyCycle(this->pin, static_cast<uint16_t>((((1.0 / 180.0) * angle) + 1.0) / (1000.0 / (SERVO_PWM_FREQUENCY * SERVO_PWM_PRESCALER))));
+  Pwm::GetInstance()->SetDutyCycle(this->pin, static_cast<uint16_t>((((2.0 / 180.0) * angle) + 0.5) / (1000.0 / (SERVO_PWM_FREQUENCY * SERVO_PWM_PRESCALER))));
 }

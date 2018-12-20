@@ -23,6 +23,11 @@ class IMapping
 
     //initialises the mapping
     virtual void Update() = 0;
+
+    //assigns values to the map
+    virtual void SetMap() = 0;
+
+    virtual void InitMappingLogic() = 0;
 };
 
 #endif
