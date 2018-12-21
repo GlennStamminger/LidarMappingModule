@@ -10,26 +10,24 @@
  */
 #include "Uart.h"
 
-/////////////////////////
-//Constructor/Destructor
-/////////////////////////
+//Constructor.
 Uart::Uart()
 {
   this->InitSerial();
 }
 
+//Destructor.
 Uart::~Uart()
 {
   this->DeInitSerial();
 }
 
-/////////////////////////
-//Public functions
-/////////////////////////
+//Read distance data from Grove TF mini lidar.
 void Uart::TfMiniDistance()
 {
   while (serialDataAvail(this->fd) > 0)
   {
+    //Check if data is available.
     this->currentByte = serialGetchar(this->fd);
     if (this->currentByte >= 0)
     {
@@ -42,7 +40,10 @@ void Uart::TfMiniDistance()
         }
         else if (this->recievedBuffer >= 2)
         {
+          //Convert data bytes into usable distance.
           this->recievedBuffer |= (static_cast<uint16_t>(this->currentByte) << 8);
+
+          //Check if recieved distance is not out of bounds.
           if(this->recievedBuffer <= 1440)
           {
             this->recievedDistance = this->recievedBuffer;
@@ -64,15 +65,13 @@ void Uart::TfMiniDistance()
   }
 }
 
+//Return the distance.
 const uint16_t& Uart::ReturnDistance() const
 {
   return this->recievedDistance;
 }
 
-/////////////////////////
-//Private functions
-/////////////////////////
-
+//Initialise serial reading.
 void Uart::InitSerial()
 {
   this->currentByte = 0;
@@ -92,6 +91,7 @@ void Uart::InitSerial()
   }
 }
 
+//Close serial.
 void Uart::DeInitSerial()
 {
   serialClose(this->fd);

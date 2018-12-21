@@ -1,7 +1,7 @@
 /**
  * @file Uart.h
  * @author Glenn Stamminger
- * @brief protocol to read data from a uart sensor
+ * @brief header file for uart class
  * @version 0.1
  * @date 2018-12-06
  * 

@@ -1,3 +1,13 @@
+/**
+ * @file IUart.h
+ * @author Glenn Stamminger
+ * @brief interface for the uart class
+ * @version 0.1
+ * @date 2018-12-21
+ * 
+ * @copyright Copyright (c) 2018
+ * 
+ */
 #ifndef IUART_H
 #define IUART_H
 
@@ -12,15 +22,21 @@
 class IUart
 {
   public:
+
+    //Destructor.
     virtual ~IUart(){};
 
     /**
-     * @brief Get the Tf Mini Distance object
+     * @brief Starts sequence to read distance from the Grove TF mini lidar once.
      * 
-     * @return the measured distance
      */
     virtual void TfMiniDistance() = 0;
 
+    /**
+     * @brief Give the distance.
+     * 
+     * @returns the measured distance.
+     */
     virtual const uint16_t& ReturnDistance() const = 0;
 };
 

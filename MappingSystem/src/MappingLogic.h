@@ -1,3 +1,13 @@
+/**
+ * @file MappingLogic.h
+ * @author Glenn Stamminger
+ * @brief header file for mappinglogic class
+ * @version 0.1
+ * @date 2018-12-21
+ * 
+ * @copyright Copyright (c) 2018
+ * 
+ */
 #ifndef MAPPING_LOGIC_H
 #define MAPPING_LOGIC_H
 #include "IMapping.h"
